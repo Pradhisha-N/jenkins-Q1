@@ -16,7 +16,8 @@ pipeline {
                     sh '''
                     if ! python3 -m pip --version; then
                         echo "pip is not installed, installing pip..."
-                        python3 -m ensurepip --upgrade
+                        curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+                        python3 get-pip.py
                     fi
                     python3 -m pip install --upgrade pip
                     python3 -m pip install -r requirements.txt

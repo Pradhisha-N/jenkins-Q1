@@ -1,23 +1,19 @@
 pipeline {
     agent any
-
     environment {        
         PYTHON_VERSION = 'python3'
     }
-
     stages {
         stage('Declarative: Checkout SCM') {
             steps {
                 checkout scm
             }
         }
-
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
-
         stage('Install dependencies') {
             steps {
                 script {
@@ -34,24 +30,20 @@ pipeline {
                 }
             }
         }
-
         stage('Run Tests') {
             steps {
-                script {
-                    
+                script {                    
                     sh 'export PYTHONPATH=$PYTHONPATH:$WORKSPACE/app && pytest'
                 }
             }
         }
-
         stage('Generate Coverage Report') {
             steps {
-                script {
-                    
+                script {                    
                     sh 'coverage run -m pytest'
                     sh 'coverage report'
                 }
             }
         }
     }
-    }
+}

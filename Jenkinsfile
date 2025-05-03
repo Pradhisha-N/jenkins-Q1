@@ -1,38 +1,44 @@
 pipeline {
     agent any
-
     environment {
         PYTHON = 'python3'
     }
-
     stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
         stage('Install dependencies') {
             steps {
-                sh '${PYTHON} -m pip install --upgrade pip'
-                sh '${PYTHON} -m pip install -r requirements.txt'
+                script {
+                    
+                    sh '''
+                    if ! python3 -m pip --version; then
+                        echo "pip is not installed, installing pip..."
+                        python3 -m ensurepip --upgrade
+                    fi
+                    python3 -m pip install --upgrade pip
+                    python3 -m pip install -r requirements.txt
+                    '''
+                }
             }
         }
-
         stage('Run Tests') {
             steps {
-                echo 'Running pytest...'
-                sh 'pytest tests/'
+                script {
+                    sh 'pytest'
+                }
             }
         }
-
         stage('Generate Coverage Report') {
             steps {
-                echo 'Generating coverage report...'
-                sh 'coverage run -m pytest tests/'
-                sh 'coverage report'
-                sh 'coverage html'
+                script {
+                    sh 'coverage run -m pytest'
+                    sh 'coverage report'
+                    sh 'coverage html'
+                }
             }
-        }
-    }
-
-    post {
-        always {
-            echo 'Pipeline execution complete.'
         }
     }
 }
